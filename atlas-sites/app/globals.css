@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Source+Sans+3:wght@400;500;600&family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply antialiased;
+  }
+}
+
+@layer components {
+  /* Industrial template base styles */
+  .template-industrial {
+    --color-primary: #1a1a1a;
+    --color-secondary: #4a5568;
+    --color-accent: #b87333;
+  }
+
+  /* Clean template base styles */
+  .template-clean {
+    --color-primary: #1e3a5f;
+    --color-secondary: #ffffff;
+    --color-accent: #3b82f6;
+  }
+
+  /* Friendly template base styles */
+  .template-friendly {
+    --color-primary: #2563eb;
+    --color-secondary: #faf7f2;
+    --color-accent: #f59e0b;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
