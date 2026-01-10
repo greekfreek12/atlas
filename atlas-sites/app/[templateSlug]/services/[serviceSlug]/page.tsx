@@ -263,7 +263,7 @@ export default async function ServicePage({ params }: PageProps) {
             className="object-cover"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0f1c2e]/95 via-[#0f1c2e]/70 to-[#0f1c2e]/40" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[var(--color-primary-dark)]/95 via-[var(--color-primary-dark)]/70 to-[var(--color-primary-dark)]/40" />
         </div>
 
         <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -295,7 +295,7 @@ export default async function ServicePage({ params }: PageProps) {
               {business.phone && (
                 <a
                   href={getPhoneHref(business.phone)}
-                  className="inline-flex items-center justify-center gap-3 bg-white text-[#1e3a5f] font-semibold py-4 px-8 rounded-lg hover:bg-gray-100 transition-colors text-lg"
+                  className="inline-flex items-center justify-center gap-3 bg-white text-primary font-semibold py-4 px-8 rounded-lg hover:bg-gray-100 transition-colors text-lg"
                 >
                   <Phone className="w-5 h-5" />
                   {formatPhone(business.phone)}
@@ -303,7 +303,7 @@ export default async function ServicePage({ params }: PageProps) {
               )}
               <a
                 href="#quote"
-                className="inline-flex items-center justify-center gap-2 bg-[#3b82f6] text-white font-semibold py-4 px-8 rounded-lg hover:bg-[#2563eb] transition-colors text-lg"
+                className="inline-flex items-center justify-center gap-2 bg-accent text-white font-semibold py-4 px-8 rounded-lg hover:bg-accent-hover transition-colors text-lg"
               >
                 Get Free Quote
               </a>
@@ -313,20 +313,20 @@ export default async function ServicePage({ params }: PageProps) {
       </section>
 
       {/* Trust Bar */}
-      <section className="bg-[#1e3a5f] py-4 border-t border-white/10">
+      <section className="bg-primary py-4 border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-white/90 text-sm">
             <span className="flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[#3b82f6]" />
+              <Shield className="w-4 h-4 text-accent-light" />
               Licensed & Insured
             </span>
             <span className="flex items-center gap-2">
-              <Award className="w-4 h-4 text-[#3b82f6]" />
+              <Award className="w-4 h-4 text-accent-light" />
               Satisfaction Guaranteed
             </span>
             {isOpen24 && (
               <span className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-[#3b82f6]" />
+                <Clock className="w-4 h-4 text-accent-light" />
                 24/7 Emergency Service
               </span>
             )}
@@ -348,14 +348,14 @@ export default async function ServicePage({ params }: PageProps) {
             <div className="lg:col-span-3 space-y-16">
               {/* Benefits */}
               <div>
-                <h2 className="text-3xl font-bold text-[#1e3a5f] mb-8">
+                <h2 className="text-3xl font-bold text-primary mb-8">
                   Why Choose Us for {service.name}
                 </h2>
                 <div className="grid sm:grid-cols-2 gap-6">
                   {content.benefits.map((benefit, i) => (
                     <div key={i} className="flex gap-4">
-                      <div className="flex-shrink-0 w-10 h-10 bg-[#3b82f6]/10 rounded-lg flex items-center justify-center">
-                        <svg className="w-5 h-5 text-[#3b82f6]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <div className="flex-shrink-0 w-10 h-10 bg-[var(--color-accent)]/10 rounded-lg flex items-center justify-center">
+                        <svg className="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                         </svg>
                       </div>
@@ -367,17 +367,17 @@ export default async function ServicePage({ params }: PageProps) {
 
               {/* Process */}
               <div>
-                <h2 className="text-3xl font-bold text-[#1e3a5f] mb-8">
+                <h2 className="text-3xl font-bold text-primary mb-8">
                   Our Process
                 </h2>
                 <div className="space-y-6">
                   {content.process.map((item, i) => (
                     <div key={i} className="flex gap-6">
-                      <div className="flex-shrink-0 w-12 h-12 bg-[#1e3a5f] rounded-full flex items-center justify-center text-white font-bold text-lg">
+                      <div className="flex-shrink-0 w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold text-lg">
                         {i + 1}
                       </div>
                       <div className="pt-1">
-                        <h3 className="font-semibold text-[#1e3a5f] text-lg mb-1">{item.step}</h3>
+                        <h3 className="font-semibold text-primary text-lg mb-1">{item.step}</h3>
                         <p className="text-gray-600">{item.description}</p>
                       </div>
                     </div>
@@ -387,13 +387,13 @@ export default async function ServicePage({ params }: PageProps) {
 
               {/* FAQs */}
               <div>
-                <h2 className="text-3xl font-bold text-[#1e3a5f] mb-8">
+                <h2 className="text-3xl font-bold text-primary mb-8">
                   Frequently Asked Questions
                 </h2>
                 <div className="space-y-6">
                   {content.faqs.map((faq, i) => (
                     <div key={i} className="border-b border-gray-200 pb-6">
-                      <h3 className="font-semibold text-[#1e3a5f] text-lg mb-2">{faq.q}</h3>
+                      <h3 className="font-semibold text-primary text-lg mb-2">{faq.q}</h3>
                       <p className="text-gray-600 leading-relaxed">{faq.a}</p>
                     </div>
                   ))}
@@ -418,9 +418,9 @@ export default async function ServicePage({ params }: PageProps) {
 
       {/* Other Services */}
       {otherServices.length > 0 && (
-        <section className="py-16 bg-[#f8fafc] border-t border-gray-200">
+        <section className="py-16 bg-background-alt border-t border-gray-200">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-2xl font-bold text-[#1e3a5f] mb-8">
+            <h2 className="text-2xl font-bold text-primary mb-8">
               Our Other Services
             </h2>
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -430,11 +430,11 @@ export default async function ServicePage({ params }: PageProps) {
                   href={`${basePath}/services/${slugify(s.name)}`}
                   className="group bg-white rounded-lg p-5 hover:shadow-lg transition-all border border-gray-100"
                 >
-                  <h3 className="font-semibold text-[#1e3a5f] mb-2 group-hover:text-[#3b82f6] transition-colors">
+                  <h3 className="font-semibold text-primary mb-2 group-hover:text-accent transition-colors">
                     {s.name}
                   </h3>
                   <p className="text-gray-600 text-sm line-clamp-2">{s.description}</p>
-                  <span className="inline-flex items-center gap-1 text-[#3b82f6] text-sm font-medium mt-3 group-hover:gap-2 transition-all">
+                  <span className="inline-flex items-center gap-1 text-accent text-sm font-medium mt-3 group-hover:gap-2 transition-all">
                     Learn more <ChevronRight className="w-4 h-4" />
                   </span>
                 </Link>
@@ -445,7 +445,7 @@ export default async function ServicePage({ params }: PageProps) {
       )}
 
       {/* Bottom CTA */}
-      <section className="py-16 bg-[#1e3a5f]">
+      <section className="py-16 bg-primary">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl lg:text-4xl font-bold text-white mb-4">
             Ready to Get Started?
@@ -458,7 +458,7 @@ export default async function ServicePage({ params }: PageProps) {
             {business.phone && (
               <a
                 href={getPhoneHref(business.phone)}
-                className="inline-flex items-center justify-center gap-3 bg-white text-[#1e3a5f] font-semibold py-4 px-8 rounded-lg hover:bg-gray-100 transition-colors text-lg"
+                className="inline-flex items-center justify-center gap-3 bg-white text-primary font-semibold py-4 px-8 rounded-lg hover:bg-gray-100 transition-colors text-lg"
               >
                 <Phone className="w-5 h-5" />
                 Call {formatPhone(business.phone)}
@@ -466,7 +466,7 @@ export default async function ServicePage({ params }: PageProps) {
             )}
             <Link
               href={`${basePath}/contact`}
-              className="inline-flex items-center justify-center gap-2 border-2 border-white text-white font-semibold py-4 px-8 rounded-lg hover:bg-white hover:text-[#1e3a5f] transition-colors text-lg"
+              className="inline-flex items-center justify-center gap-2 border-2 border-white text-white font-semibold py-4 px-8 rounded-lg hover:bg-white hover:text-primary transition-colors text-lg"
             >
               Contact Us
             </Link>

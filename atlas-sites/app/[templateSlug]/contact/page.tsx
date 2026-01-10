@@ -68,7 +68,7 @@ export default function ContactPage() {
   if (loading) {
     return (
       <div className="min-h-[50vh] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-[#3b82f6] animate-spin" />
+        <Loader2 className="w-8 h-8 text-accent animate-spin" />
       </div>
     );
   }
@@ -87,7 +87,7 @@ export default function ContactPage() {
   return (
     <>
       {/* Hero */}
-      <section className="bg-[#1e3a5f] py-16 lg:py-20">
+      <section className="bg-primary py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="font-['Playfair_Display'] text-3xl lg:text-4xl font-semibold text-white mb-4">
             Contact Us
@@ -120,7 +120,7 @@ export default function ContactPage() {
                 </div>
               ) : (
                 <>
-                  <h2 className="font-['Playfair_Display'] text-2xl font-semibold text-[#1e3a5f] mb-6">
+                  <h2 className="font-['Playfair_Display'] text-2xl font-semibold text-primary mb-6">
                     Send us a message
                   </h2>
                   <form onSubmit={handleSubmit} className="space-y-5">
@@ -133,7 +133,7 @@ export default function ContactPage() {
                         required
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-[#3b82f6] focus:ring-2 focus:ring-[#3b82f6]/20 outline-none transition-all text-gray-900"
+                        className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-accent focus:ring-2 focus:ring-[var(--color-accent)]/20 outline-none transition-all text-gray-900"
                       />
                     </div>
                     <div>
@@ -145,7 +145,7 @@ export default function ContactPage() {
                         required
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-[#3b82f6] focus:ring-2 focus:ring-[#3b82f6]/20 outline-none transition-all text-gray-900"
+                        className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-accent focus:ring-2 focus:ring-[var(--color-accent)]/20 outline-none transition-all text-gray-900"
                       />
                     </div>
                     <div>
@@ -156,7 +156,7 @@ export default function ContactPage() {
                         type="email"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-[#3b82f6] focus:ring-2 focus:ring-[#3b82f6]/20 outline-none transition-all text-gray-900"
+                        className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-accent focus:ring-2 focus:ring-[var(--color-accent)]/20 outline-none transition-all text-gray-900"
                       />
                     </div>
                     <div>
@@ -168,13 +168,13 @@ export default function ContactPage() {
                         rows={4}
                         value={formData.message}
                         onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                        className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-[#3b82f6] focus:ring-2 focus:ring-[#3b82f6]/20 outline-none transition-all resize-none text-gray-900"
+                        className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-accent focus:ring-2 focus:ring-[var(--color-accent)]/20 outline-none transition-all resize-none text-gray-900"
                       />
                     </div>
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="w-full bg-[#3b82f6] hover:bg-[#2563eb] disabled:bg-[#3b82f6]/70 text-white font-semibold py-3.5 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
+                      className="w-full bg-accent hover:bg-accent-hover disabled:bg-[var(--color-accent)]/70 text-white font-semibold py-3.5 px-6 rounded-lg transition-colors flex items-center justify-center gap-2"
                     >
                       {isSubmitting ? (
                         <>
@@ -192,19 +192,19 @@ export default function ContactPage() {
 
             {/* Contact Info */}
             <div>
-              <h2 className="font-['Playfair_Display'] text-2xl font-semibold text-[#1e3a5f] mb-6">
+              <h2 className="font-['Playfair_Display'] text-2xl font-semibold text-primary mb-6">
                 Contact Information
               </h2>
 
               <div className="space-y-6">
                 {business.phone && (
                   <a href={getPhoneHref(business.phone)} className="flex items-start gap-4 group">
-                    <div className="w-12 h-12 bg-[#3b82f6]/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-[#3b82f6] transition-colors">
-                      <Phone className="w-5 h-5 text-[#3b82f6] group-hover:text-white transition-colors" />
+                    <div className="w-12 h-12 bg-[var(--color-accent)]/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-accent transition-colors">
+                      <Phone className="w-5 h-5 text-accent group-hover:text-white transition-colors" />
                     </div>
                     <div>
                       <div className="text-sm text-gray-500 mb-1">Phone</div>
-                      <div className="text-lg font-medium text-[#1e3a5f] group-hover:text-[#3b82f6] transition-colors">
+                      <div className="text-lg font-medium text-primary group-hover:text-accent transition-colors">
                         {formatPhone(business.phone)}
                       </div>
                     </div>
@@ -213,12 +213,12 @@ export default function ContactPage() {
 
                 {business.email && (
                   <a href={`mailto:${business.email}`} className="flex items-start gap-4 group">
-                    <div className="w-12 h-12 bg-[#3b82f6]/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-[#3b82f6] transition-colors">
-                      <Mail className="w-5 h-5 text-[#3b82f6] group-hover:text-white transition-colors" />
+                    <div className="w-12 h-12 bg-[var(--color-accent)]/10 rounded-lg flex items-center justify-center flex-shrink-0 group-hover:bg-accent transition-colors">
+                      <Mail className="w-5 h-5 text-accent group-hover:text-white transition-colors" />
                     </div>
                     <div>
                       <div className="text-sm text-gray-500 mb-1">Email</div>
-                      <div className="text-lg font-medium text-[#1e3a5f] group-hover:text-[#3b82f6] transition-colors">
+                      <div className="text-lg font-medium text-primary group-hover:text-accent transition-colors">
                         {business.email}
                       </div>
                     </div>
@@ -227,8 +227,8 @@ export default function ContactPage() {
 
                 {business.full_address && (
                   <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-[#3b82f6]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <MapPin className="w-5 h-5 text-[#3b82f6]" />
+                    <div className="w-12 h-12 bg-[var(--color-accent)]/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                      <MapPin className="w-5 h-5 text-accent" />
                     </div>
                     <div>
                       <div className="text-sm text-gray-500 mb-1">Address</div>
@@ -240,8 +240,8 @@ export default function ContactPage() {
                 )}
 
                 <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-[#3b82f6]/10 rounded-lg flex items-center justify-center flex-shrink-0">
-                    <Clock className="w-5 h-5 text-[#3b82f6]" />
+                  <div className="w-12 h-12 bg-[var(--color-accent)]/10 rounded-lg flex items-center justify-center flex-shrink-0">
+                    <Clock className="w-5 h-5 text-accent" />
                   </div>
                   <div>
                     <div className="text-sm text-gray-500 mb-1">Hours</div>
@@ -268,7 +268,7 @@ export default function ContactPage() {
                       href={`https://www.google.com/maps/search/?api=1&query=${business.latitude},${business.longitude}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[#3b82f6] hover:underline"
+                      className="text-accent hover:underline"
                     >
                       View on Google Maps
                     </a>

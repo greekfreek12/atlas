@@ -21,7 +21,7 @@ export function Footer({ business, basePath }: FooterProps) {
   ];
 
   return (
-    <footer className="bg-[#1e3a5f] text-white">
+    <footer className="bg-primary text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Business Info */}

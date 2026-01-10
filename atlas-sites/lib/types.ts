@@ -337,68 +337,21 @@ export interface BusinessWithServices extends Business {
   services: Service[];
 }
 
-// Template config type
-export interface TemplateConfig {
-  name: TemplateName;
-  displayName: string;
-  colors: {
-    primary: string;
-    secondary: string;
-    accent: string;
-    background: string;
-    text: string;
-  };
-  fonts: {
-    display: string;
-    body: string;
-  };
-}
-
-// Template configurations
-export const TEMPLATE_CONFIGS: Record<TemplateName, TemplateConfig> = {
-  industrial: {
-    name: 'industrial',
-    displayName: 'Industrial',
-    colors: {
-      primary: '#1a1a1a',
-      secondary: '#4a5568',
-      accent: '#b87333',
-      background: '#0f0f0f',
-      text: '#ffffff',
-    },
-    fonts: {
-      display: 'Oswald',
-      body: 'Source Sans 3',
-    },
-  },
-  clean: {
-    name: 'clean',
-    displayName: 'Clean',
-    colors: {
-      primary: '#1e3a5f',
-      secondary: '#ffffff',
-      accent: '#3b82f6',
-      background: '#ffffff',
-      text: '#1e3a5f',
-    },
-    fonts: {
-      display: 'Playfair Display',
-      body: 'DM Sans',
-    },
-  },
-  friendly: {
-    name: 'friendly',
-    displayName: 'Friendly',
-    colors: {
-      primary: '#2563eb',
-      secondary: '#faf7f2',
-      accent: '#f59e0b',
-      background: '#faf7f2',
-      text: '#1f2937',
-    },
-    fonts: {
-      display: 'Nunito',
-      body: 'Nunito',
-    },
-  },
-};
+/**
+ * Default theme colors.
+ *
+ * Colors are now managed via CSS custom properties defined in globals.css.
+ * To customize a business site, set these fields in the database:
+ * - primary_color: Main brand color (used for headers, titles, footer bg)
+ * - accent_color: Action color (used for buttons, links, CTAs)
+ *
+ * The CSS variable system automatically generates darker/lighter variants.
+ */
+export const DEFAULT_COLORS = {
+  primary: '#1e3a5f',
+  primaryDark: '#0f1c2e',
+  primaryHover: '#152a45',
+  accent: '#3b82f6',
+  accentHover: '#2563eb',
+  accentLight: '#60a5fa',
+} as const;

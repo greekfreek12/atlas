@@ -2,12 +2,40 @@ import { notFound } from 'next/navigation';
 import { getBusinessByTemplateSlug, getMockBusiness } from '@/lib/data';
 import { parseTemplateSlug } from '@/lib/utils';
 
-// Import all template headers and footers
-import { Header as CleanHeader, Footer as CleanFooter } from '@/components/templates/clean';
+import { Header, Footer } from '@/components/templates/clean';
 
 interface LayoutProps {
   children: React.ReactNode;
   params: Promise<{ templateSlug: string }>;
+}
+
+/**
+ * Generates CSS custom property overrides for business-specific colors.
+ * These variables override the defaults defined in globals.css.
+ *
+ * To customize a business site, set these fields in the database:
+ * - primary_color: Main brand color (headers, titles, footer background)
+ * - accent_color: Action color (buttons, links, CTAs)
+ *
+ * The system will automatically generate darker/lighter variants using CSS color-mix().
+ */
+function generateColorStyles(primaryColor?: string | null, accentColor?: string | null): React.CSSProperties {
+  const styles: Record<string, string> = {};
+
+  if (primaryColor) {
+    styles['--color-primary'] = primaryColor;
+    // Generate darker variants using CSS color-mix
+    styles['--color-primary-dark'] = `color-mix(in srgb, ${primaryColor} 60%, black)`;
+    styles['--color-primary-hover'] = `color-mix(in srgb, ${primaryColor} 80%, black)`;
+  }
+
+  if (accentColor) {
+    styles['--color-accent'] = accentColor;
+    styles['--color-accent-hover'] = `color-mix(in srgb, ${accentColor} 80%, black)`;
+    styles['--color-accent-light'] = `color-mix(in srgb, ${accentColor} 70%, white)`;
+  }
+
+  return styles as React.CSSProperties;
 }
 
 export default async function TemplateLayout({ children, params }: LayoutProps) {
@@ -32,40 +60,15 @@ export default async function TemplateLayout({ children, params }: LayoutProps) 
   }
 
   const basePath = `/${templateSlug}`;
-  const { template } = parsed;
 
-  // Render template-specific layout
-  switch (template) {
-    case 'clean':
-      return (
-        <div className="min-h-screen flex flex-col">
-          <CleanHeader business={business} basePath={basePath} />
-          <main className="flex-grow">{children}</main>
-          <CleanFooter business={business} basePath={basePath} />
-        </div>
-      );
+  // Generate custom color styles from business settings
+  const colorStyles = generateColorStyles(business.primary_color, business.accent_color);
 
-    case 'industrial':
-      // TODO: Industrial template
-      return (
-        <div className="min-h-screen flex flex-col bg-[#1a1a1a]">
-          <CleanHeader business={business} basePath={basePath} />
-          <main className="flex-grow">{children}</main>
-          <CleanFooter business={business} basePath={basePath} />
-        </div>
-      );
-
-    case 'friendly':
-      // TODO: Friendly template
-      return (
-        <div className="min-h-screen flex flex-col bg-[#faf7f2]">
-          <CleanHeader business={business} basePath={basePath} />
-          <main className="flex-grow">{children}</main>
-          <CleanFooter business={business} basePath={basePath} />
-        </div>
-      );
-
-    default:
-      notFound();
-  }
+  return (
+    <div className="min-h-screen flex flex-col" style={colorStyles}>
+      <Header business={business} basePath={basePath} />
+      <main className="flex-grow">{children}</main>
+      <Footer business={business} basePath={basePath} />
+    </div>
+  );
 }

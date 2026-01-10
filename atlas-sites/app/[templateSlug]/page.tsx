@@ -1,14 +1,14 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getBusinessByTemplateSlug, getMockBusiness } from '@/lib/data';
-import { parseTemplateSlug, hasSignificantReviews } from '@/lib/utils';
+import { parseTemplateSlug, hasSignificantReviews, is24Hours } from '@/lib/utils';
 
 // Clean template components
 import {
   Hero as CleanHero,
+  TrustBar as CleanTrustBar,
   Services as CleanServices,
   Reviews as CleanReviews,
-  Footer as CleanFooter,
 } from '@/components/templates/clean';
 
 interface PageProps {
@@ -58,42 +58,45 @@ export default async function HomePage({ params }: PageProps) {
 
   const basePath = `/${templateSlug}`;
   const showReviews = hasSignificantReviews(business.google_rating, business.google_reviews_count);
+  const isOpen24 = is24Hours(business.working_hours);
+
+  // Build JSON-LD structured data for SEO (all values are from trusted database, not user input)
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Plumber',
+    name: business.name,
+    telephone: business.phone,
+    address: business.street ? {
+      '@type': 'PostalAddress',
+      streetAddress: business.street,
+      addressLocality: business.city,
+      addressRegion: business.state,
+      postalCode: business.postal_code,
+    } : undefined,
+    geo: business.latitude && business.longitude ? {
+      '@type': 'GeoCoordinates',
+      latitude: business.latitude,
+      longitude: business.longitude,
+    } : undefined,
+    aggregateRating: business.google_rating && business.google_reviews_count ? {
+      '@type': 'AggregateRating',
+      ratingValue: business.google_rating,
+      reviewCount: business.google_reviews_count,
+    } : undefined,
+  };
 
   // Render template-specific home page
   return (
     <>
       <CleanHero business={business} basePath={basePath} />
-      <CleanServices services={business.services} basePath={basePath} />
+      <CleanTrustBar businessName={business.name} is24Hours={isOpen24} />
+      <CleanServices services={business.services} basePath={basePath} businessName={business.name} />
       {showReviews && <CleanReviews business={business} />}
 
-      {/* JSON-LD Schema */}
+      {/* JSON-LD Schema for SEO - data is from trusted database source */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            '@context': 'https://schema.org',
-            '@type': 'Plumber',
-            name: business.name,
-            telephone: business.phone,
-            address: business.street ? {
-              '@type': 'PostalAddress',
-              streetAddress: business.street,
-              addressLocality: business.city,
-              addressRegion: business.state,
-              postalCode: business.postal_code,
-            } : undefined,
-            geo: business.latitude && business.longitude ? {
-              '@type': 'GeoCoordinates',
-              latitude: business.latitude,
-              longitude: business.longitude,
-            } : undefined,
-            aggregateRating: business.google_rating && business.google_reviews_count ? {
-              '@type': 'AggregateRating',
-              ratingValue: business.google_rating,
-              reviewCount: business.google_reviews_count,
-            } : undefined,
-          }),
-        }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
     </>
   );

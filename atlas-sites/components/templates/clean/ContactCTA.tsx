@@ -21,7 +21,7 @@ export function ContactCTA({ business, basePath }: ContactCTAProps) {
           <div className="grid md:grid-cols-2">
             {/* Left - CTA Content */}
             <div className="p-8 md:p-12 lg:p-16">
-              <h2 className="font-['Playfair_Display'] text-3xl md:text-4xl font-bold text-[#1e3a5f] mb-4">
+              <h2 className="font-['Playfair_Display'] text-3xl md:text-4xl font-bold text-primary mb-4">
                 Ready to Get Started?
               </h2>
               <p className="text-gray-600 text-lg mb-8">
@@ -34,12 +34,12 @@ export function ContactCTA({ business, basePath }: ContactCTAProps) {
                   href={getPhoneHref(business.phone)}
                   className="flex items-center gap-4 mb-6 group"
                 >
-                  <div className="w-12 h-12 bg-[#3b82f6] rounded-xl flex items-center justify-center group-hover:bg-[#2563eb] transition-colors">
+                  <div className="w-12 h-12 bg-accent rounded-xl flex items-center justify-center group-hover:bg-accent-hover transition-colors">
                     <Phone className="w-6 h-6 text-white" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Call us now</p>
-                    <p className="text-xl font-semibold text-[#1e3a5f]">
+                    <p className="text-xl font-semibold text-primary">
                       {formatPhone(business.phone)}
                     </p>
                   </div>
@@ -50,11 +50,11 @@ export function ContactCTA({ business, basePath }: ContactCTAProps) {
               {todayHours && (
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
-                    <Clock className="w-6 h-6 text-[#1e3a5f]" />
+                    <Clock className="w-6 h-6 text-primary" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Today&apos;s hours</p>
-                    <p className="text-lg font-medium text-[#1e3a5f]">
+                    <p className="text-lg font-medium text-primary">
                       {todayHours.split(': ')[1]}
                     </p>
                   </div>
@@ -65,11 +65,11 @@ export function ContactCTA({ business, basePath }: ContactCTAProps) {
               {business.city && business.state && (
                 <div className="flex items-center gap-4 mb-8">
                   <div className="w-12 h-12 bg-gray-100 rounded-xl flex items-center justify-center">
-                    <MapPin className="w-6 h-6 text-[#1e3a5f]" />
+                    <MapPin className="w-6 h-6 text-primary" />
                   </div>
                   <div>
                     <p className="text-sm text-gray-500">Serving</p>
-                    <p className="text-lg font-medium text-[#1e3a5f]">
+                    <p className="text-lg font-medium text-primary">
                       {business.city}, {business.state}
                     </p>
                   </div>
@@ -78,7 +78,7 @@ export function ContactCTA({ business, basePath }: ContactCTAProps) {
 
               <Link
                 href={`${basePath}/contact`}
-                className="inline-flex items-center justify-center bg-[#3b82f6] hover:bg-[#2563eb] text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 shadow-md hover:shadow-lg"
+                className="inline-flex items-center justify-center bg-accent hover:bg-accent-hover text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 shadow-md hover:shadow-lg"
               >
                 Request a Free Quote
               </Link>

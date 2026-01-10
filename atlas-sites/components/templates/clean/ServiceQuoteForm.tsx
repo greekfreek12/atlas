@@ -49,7 +49,7 @@ export function ServiceQuoteForm({ businessId, businessName, businessPhone, serv
         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
           <CheckCircle className="w-8 h-8 text-green-600" />
         </div>
-        <h3 className="text-xl font-bold text-[#1e3a5f] mb-2">
+        <h3 className="text-xl font-bold text-primary mb-2">
           Request Received!
         </h3>
         <p className="text-gray-600 mb-6">
@@ -58,7 +58,7 @@ export function ServiceQuoteForm({ businessId, businessName, businessPhone, serv
         {businessPhone && (
           <p className="text-sm text-gray-500">
             Need immediate help? Call{' '}
-            <a href={getPhoneHref(businessPhone)} className="text-[#3b82f6] font-medium">
+            <a href={getPhoneHref(businessPhone)} className="text-accent font-medium">
               {formatPhone(businessPhone)}
             </a>
           </p>
@@ -70,7 +70,7 @@ export function ServiceQuoteForm({ businessId, businessName, businessPhone, serv
   return (
     <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
       {/* Header */}
-      <div className="bg-[#1e3a5f] px-6 py-5">
+      <div className="bg-primary px-6 py-5">
         <h3 className="text-xl font-bold text-white">
           Get a Free Quote
         </h3>
@@ -91,7 +91,7 @@ export function ServiceQuoteForm({ businessId, businessName, businessPhone, serv
             value={formData.name}
             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             placeholder="John Smith"
-            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-[#3b82f6] focus:ring-2 focus:ring-[#3b82f6]/20 outline-none transition-all text-gray-900"
+            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-accent focus:ring-2 focus:ring-[var(--color-accent)]/20 outline-none transition-all text-gray-900"
           />
         </div>
 
@@ -105,7 +105,7 @@ export function ServiceQuoteForm({ businessId, businessName, businessPhone, serv
             value={formData.phone}
             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
             placeholder="(239) 555-0123"
-            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-[#3b82f6] focus:ring-2 focus:ring-[#3b82f6]/20 outline-none transition-all text-gray-900"
+            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-accent focus:ring-2 focus:ring-[var(--color-accent)]/20 outline-none transition-all text-gray-900"
           />
         </div>
 
@@ -118,7 +118,7 @@ export function ServiceQuoteForm({ businessId, businessName, businessPhone, serv
             value={formData.email}
             onChange={(e) => setFormData({ ...formData, email: e.target.value })}
             placeholder="john@example.com"
-            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-[#3b82f6] focus:ring-2 focus:ring-[#3b82f6]/20 outline-none transition-all text-gray-900"
+            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-accent focus:ring-2 focus:ring-[var(--color-accent)]/20 outline-none transition-all text-gray-900"
           />
         </div>
 
@@ -132,14 +132,14 @@ export function ServiceQuoteForm({ businessId, businessName, businessPhone, serv
             value={formData.message}
             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
             placeholder="Tell us about your plumbing issue..."
-            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-[#3b82f6] focus:ring-2 focus:ring-[#3b82f6]/20 outline-none transition-all resize-none text-gray-900"
+            className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:border-accent focus:ring-2 focus:ring-[var(--color-accent)]/20 outline-none transition-all resize-none text-gray-900"
           />
         </div>
 
         <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-[#3b82f6] hover:bg-[#2563eb] disabled:bg-[#3b82f6]/70 text-white font-semibold py-4 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 text-lg"
+          className="w-full bg-accent hover:bg-accent-hover disabled:bg-[var(--color-accent)]/70 text-white font-semibold py-4 px-6 rounded-lg transition-colors flex items-center justify-center gap-2 text-lg"
         >
           {isSubmitting ? (
             <>
@@ -166,7 +166,7 @@ export function ServiceQuoteForm({ businessId, businessName, businessPhone, serv
 
           <a
             href={getPhoneHref(businessPhone)}
-            className="mt-4 flex items-center justify-center gap-3 w-full border-2 border-[#1e3a5f] text-[#1e3a5f] hover:bg-[#1e3a5f] hover:text-white font-semibold py-3 px-4 rounded-lg transition-colors"
+            className="mt-4 flex items-center justify-center gap-3 w-full border-2 border-primary text-primary hover:bg-primary hover:text-white font-semibold py-3 px-4 rounded-lg transition-colors"
           >
             <Phone className="w-5 h-5" />
             {formatPhone(businessPhone)}

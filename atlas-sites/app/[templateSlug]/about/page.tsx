@@ -53,7 +53,7 @@ export default async function AboutPage({ params }: PageProps) {
   return (
     <>
       {/* Hero */}
-      <section className="bg-[#1e3a5f] py-16 lg:py-20">
+      <section className="bg-primary py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="font-['Playfair_Display'] text-3xl lg:text-4xl font-semibold text-white mb-4">
             About {business.name}
@@ -82,8 +82,8 @@ export default async function AboutPage({ params }: PageProps) {
 
               {/* Service Area */}
               {business.city && (
-                <div className="mt-12 p-6 bg-[#f8fafc] rounded-xl">
-                  <h2 className="font-semibold text-[#1e3a5f] mb-3">Service Area</h2>
+                <div className="mt-12 p-6 bg-background-alt rounded-xl">
+                  <h2 className="font-semibold text-primary mb-3">Service Area</h2>
                   <p className="text-gray-600">
                     We proudly serve {business.city}, {business.state} and the surrounding communities.
                     {isOpen24 && ' Emergency services available 24/7.'}
@@ -94,8 +94,8 @@ export default async function AboutPage({ params }: PageProps) {
 
             {/* Sidebar */}
             <div className="lg:col-span-1">
-              <div className="bg-[#f8fafc] rounded-xl p-6 lg:p-8 sticky top-24">
-                <h3 className="font-semibold text-[#1e3a5f] mb-4">
+              <div className="bg-background-alt rounded-xl p-6 lg:p-8 sticky top-24">
+                <h3 className="font-semibold text-primary mb-4">
                   Get in Touch
                 </h3>
                 <p className="text-gray-600 text-sm mb-6">
@@ -105,7 +105,7 @@ export default async function AboutPage({ params }: PageProps) {
                 {business.phone && (
                   <a
                     href={getPhoneHref(business.phone)}
-                    className="flex items-center justify-center gap-2 w-full bg-[#3b82f6] hover:bg-[#2563eb] text-white font-medium py-3 px-4 rounded-lg transition-colors mb-3"
+                    className="flex items-center justify-center gap-2 w-full bg-accent hover:bg-accent-hover text-white font-medium py-3 px-4 rounded-lg transition-colors mb-3"
                   >
                     <Phone className="w-4 h-4" />
                     {formatPhone(business.phone)}
@@ -114,7 +114,7 @@ export default async function AboutPage({ params }: PageProps) {
 
                 <Link
                   href={`${basePath}/contact`}
-                  className="block text-center w-full border border-[#1e3a5f] text-[#1e3a5f] hover:bg-[#1e3a5f] hover:text-white font-medium py-3 px-4 rounded-lg transition-colors"
+                  className="block text-center w-full border border-primary text-primary hover:bg-primary hover:text-white font-medium py-3 px-4 rounded-lg transition-colors"
                 >
                   Contact Us
                 </Link>
