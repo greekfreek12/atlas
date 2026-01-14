@@ -12,6 +12,7 @@ import type { LeadWithBusiness, LeadStatus } from '@/lib/types';
 
 interface KanbanBoardProps {
   initialLeads: Record<LeadStatus, LeadWithBusiness[]>;
+  pipelineMode?: boolean; // If true, excludes 'new' column
 }
 
 interface ColumnConfig {
@@ -29,9 +30,14 @@ const COLUMNS: ColumnConfig[] = [
   { status: 'lost', title: 'Lost', color: 'var(--status-lost)' },
 ];
 
-export default function KanbanBoard({ initialLeads }: KanbanBoardProps) {
+export default function KanbanBoard({ initialLeads, pipelineMode = false }: KanbanBoardProps) {
   const [leads, setLeads] = useState(initialLeads);
   const [updating, setUpdating] = useState<string | null>(null);
+
+  // Filter columns based on mode
+  const columns = pipelineMode
+    ? COLUMNS.filter((c) => c.status !== 'new')
+    : COLUMNS;
 
   const handleDragEnd = useCallback(async (result: DropResult) => {
     const { destination, source, draggableId } = result;
@@ -99,7 +105,7 @@ export default function KanbanBoard({ initialLeads }: KanbanBoardProps) {
   return (
     <DragDropContext onDragEnd={handleDragEnd}>
       <div className="kanban-board">
-        {COLUMNS.map((column, columnIndex) => (
+        {columns.map((column, columnIndex) => (
           <div
             key={column.status}
             className="kanban-column animate-fade-in"

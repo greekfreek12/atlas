@@ -1,41 +1,33 @@
 import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
 import { getBusinessByTemplateSlug, getMockBusiness } from '@/lib/data';
 import { parseTemplateSlug } from '@/lib/utils';
+import { getOrCreateSiteConfig, generateDefaultConfig } from '@/lib/site-config';
 
-import { Header, Footer } from '@/components/templates/clean';
+import { GlobalHeader } from '@/components/GlobalHeader';
+import { GlobalFooter } from '@/components/GlobalFooter';
 
 interface LayoutProps {
   children: React.ReactNode;
   params: Promise<{ templateSlug: string }>;
 }
 
-/**
- * Generates CSS custom property overrides for business-specific colors.
- * These variables override the defaults defined in globals.css.
- *
- * To customize a business site, set these fields in the database:
- * - primary_color: Main brand color (headers, titles, footer background)
- * - accent_color: Action color (buttons, links, CTAs)
- *
- * The system will automatically generate darker/lighter variants using CSS color-mix().
- */
-function generateColorStyles(primaryColor?: string | null, accentColor?: string | null): React.CSSProperties {
-  const styles: Record<string, string> = {};
+// Dynamic metadata with favicon from business logo
+export async function generateMetadata({ params }: { params: Promise<{ templateSlug: string }> }): Promise<Metadata> {
+  const { templateSlug } = await params;
+  const business = await getBusinessByTemplateSlug(templateSlug);
 
-  if (primaryColor) {
-    styles['--color-primary'] = primaryColor;
-    // Generate darker variants using CSS color-mix
-    styles['--color-primary-dark'] = `color-mix(in srgb, ${primaryColor} 60%, black)`;
-    styles['--color-primary-hover'] = `color-mix(in srgb, ${primaryColor} 80%, black)`;
+  if (!business) {
+    return {};
   }
 
-  if (accentColor) {
-    styles['--color-accent'] = accentColor;
-    styles['--color-accent-hover'] = `color-mix(in srgb, ${accentColor} 80%, black)`;
-    styles['--color-accent-light'] = `color-mix(in srgb, ${accentColor} 70%, white)`;
-  }
-
-  return styles as React.CSSProperties;
+  return {
+    icons: business.logo ? {
+      icon: business.logo,
+      shortcut: business.logo,
+      apple: business.logo,
+    } : undefined,
+  };
 }
 
 export default async function TemplateLayout({ children, params }: LayoutProps) {
@@ -61,14 +53,53 @@ export default async function TemplateLayout({ children, params }: LayoutProps) 
 
   const basePath = `/${templateSlug}`;
 
-  // Generate custom color styles from business settings
-  const colorStyles = generateColorStyles(business.primary_color, business.accent_color);
+  // Get or create site config
+  let siteConfig;
+  try {
+    siteConfig = await getOrCreateSiteConfig(business);
+  } catch (error) {
+    // Fallback to generated default if database unavailable
+    siteConfig = generateDefaultConfig(business);
+  }
+
+  // Generate CSS variables from theme
+  const themeStyles = {
+    '--color-primary': siteConfig.theme.colors.primary,
+    '--color-primary-dark': siteConfig.theme.colors.primaryDark,
+    '--color-primary-light': siteConfig.theme.colors.primaryLight,
+    '--color-accent': siteConfig.theme.colors.accent,
+    '--color-accent-hover': siteConfig.theme.colors.accentHover,
+    '--color-accent-muted': siteConfig.theme.colors.accentMuted,
+    '--color-accent-light': siteConfig.theme.colors.accentLight,
+    '--color-background': siteConfig.theme.colors.background,
+    '--color-background-alt': siteConfig.theme.colors.backgroundAlt,
+    '--color-text': siteConfig.theme.colors.text,
+    '--color-text-muted': siteConfig.theme.colors.textMuted,
+    '--font-heading': siteConfig.theme.fonts.heading,
+    '--font-body': siteConfig.theme.fonts.body,
+  } as React.CSSProperties;
 
   return (
-    <div className="min-h-screen flex flex-col" style={colorStyles}>
-      <Header business={business} basePath={basePath} />
+    <div
+      className="min-h-screen flex flex-col"
+      style={{
+        ...themeStyles,
+        fontFamily: 'var(--font-body)',
+        backgroundColor: 'var(--color-background)',
+        color: 'var(--color-text)',
+      }}
+    >
+      <GlobalHeader
+        config={siteConfig.globals.header}
+        business={business}
+        basePath={basePath}
+      />
       <main className="flex-grow">{children}</main>
-      <Footer business={business} basePath={basePath} />
+      <GlobalFooter
+        config={siteConfig.globals.footer}
+        business={business}
+        basePath={basePath}
+      />
     </div>
   );
 }

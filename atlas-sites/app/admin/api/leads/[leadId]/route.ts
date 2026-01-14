@@ -9,19 +9,12 @@ export async function PATCH(
   try {
     const { leadId } = await params;
     const body = await request.json();
-    const { status } = body;
+    const { status, notes } = body;
 
-    if (!status) {
+    // Must provide at least one field to update
+    if (!status && notes === undefined) {
       return NextResponse.json(
-        { error: 'Status is required' },
-        { status: 400 }
-      );
-    }
-
-    const validStatuses = ['new', 'contacted', 'interested', 'demo', 'customer', 'lost'];
-    if (!validStatuses.includes(status)) {
-      return NextResponse.json(
-        { error: 'Invalid status' },
+        { error: 'At least one field (status or notes) is required' },
         { status: 400 }
       );
     }
@@ -29,22 +22,43 @@ export async function PATCH(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const supabase = createServerClient() as any;
 
-    // Get the current lead to log the change
-    const { data: currentLead } = await supabase
-      .from('leads')
-      .select('status')
-      .eq('id', leadId)
-      .single() as { data: { status: string } | null };
+    // Build update object
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const updateData: any = {
+      updated_at: new Date().toISOString(),
+    };
 
-    const previousStatus = currentLead?.status;
+    // Handle status update
+    let previousStatus: string | undefined;
+    if (status) {
+      const validStatuses = ['new', 'contacted', 'interested', 'demo', 'customer', 'lost'];
+      if (!validStatuses.includes(status)) {
+        return NextResponse.json(
+          { error: 'Invalid status' },
+          { status: 400 }
+        );
+      }
 
-    // Update the lead status
+      // Get the current lead to log the change
+      const { data: currentLead } = await supabase
+        .from('leads')
+        .select('status')
+        .eq('id', leadId)
+        .single() as { data: { status: string } | null };
+
+      previousStatus = currentLead?.status;
+      updateData.status = status;
+    }
+
+    // Handle notes update
+    if (notes !== undefined) {
+      updateData.notes = notes;
+    }
+
+    // Update the lead
     const { data: updatedLead, error } = await supabase
       .from('leads')
-      .update({
-        status,
-        updated_at: new Date().toISOString(),
-      })
+      .update(updateData)
       .eq('id', leadId)
       .select()
       .single() as { data: Lead | null; error: Error | null };
@@ -54,8 +68,8 @@ export async function PATCH(
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    // Log the activity
-    if (previousStatus !== status) {
+    // Log status change activity
+    if (status && previousStatus !== status) {
       await supabase.from('lead_activities').insert({
         lead_id: leadId,
         activity_type: 'status_change',

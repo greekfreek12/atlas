@@ -1,36 +1,14 @@
 // Template types
-export type TemplateName = 'industrial' | 'clean' | 'friendly';
+export type TemplateName = 'plumbing';
 
 // Business status
 export type BusinessStatus = 'prospect' | 'active' | 'churned' | 'paused';
 
-// ============================================
-// V2: Niches
-// ============================================
-
-export interface Niche {
-  id: string;
-  slug: string;
-  display_name: string;
-  schema_type: string;
-  default_headline_template: string | null;
-  default_tagline_template: string | null;
-  default_about_template: string | null;
-  hero_images: string[] | null;
-  icon_set: string;
-  created_at: string;
-}
-
-export interface NicheImageMapping {
-  id: string;
-  niche_id: string;
-  service_slug: string;
-  images: string[];
-  created_at: string;
-}
+// Logo quality for ML training
+export type LogoQuality = 'good' | 'bad' | 'unlabeled';
 
 // ============================================
-// V2: Lead & CRM Types
+// Lead & CRM Types
 // ============================================
 
 export type LeadStatus = 'new' | 'contacted' | 'interested' | 'demo' | 'customer' | 'lost';
@@ -41,6 +19,10 @@ export interface Lead {
   business_id: string;
   status: LeadStatus;
   stage: LeadStage;
+  // Business owner info
+  owner_name: string | null;
+  owner_email: string | null;
+  // Contact info (from form submissions, etc.)
   contact_name: string | null;
   contact_phone: string | null;
   contact_email: string | null;
@@ -56,24 +38,6 @@ export interface Lead {
 
 export interface LeadWithBusiness extends Lead {
   business: Business;
-}
-
-export type SMSCampaignStatus = 'draft' | 'active' | 'paused' | 'completed';
-
-export interface SMSCampaign {
-  id: string;
-  name: string;
-  niche_id: string | null;
-  message_template: string;
-  follow_up_templates: string[] | null;
-  target_criteria: Record<string, unknown> | null;
-  status: SMSCampaignStatus;
-  total_sent: number;
-  total_delivered: number;
-  total_responded: number;
-  total_converted: number;
-  created_at: string;
-  updated_at: string;
 }
 
 export type SMSDirection = 'outbound' | 'inbound';
@@ -113,72 +77,6 @@ export interface LeadActivity {
   created_at: string;
 }
 
-// ============================================
-// V2: Research Types
-// ============================================
-
-export interface BusinessResearch {
-  id: string;
-  business_id: string;
-  facebook_data: Record<string, unknown> | null;
-  instagram_data: Record<string, unknown> | null;
-  website_url: string | null;
-  website_images: string[] | null;
-  website_content: Record<string, unknown> | null;
-  generated_headline: string | null;
-  generated_tagline: string | null;
-  generated_about: string | null;
-  generated_service_descriptions: Record<string, string> | null;
-  outscraper_completed_at: string | null;
-  social_completed_at: string | null;
-  website_completed_at: string | null;
-  ai_copy_completed_at: string | null;
-  profile_completeness_score: number | null;
-  data_quality_score: number | null;
-  created_at: string;
-  updated_at: string;
-}
-
-export type ResearchJobType = 'outscraper' | 'apify_social' | 'website' | 'ai_copy';
-export type ResearchJobStatus = 'pending' | 'running' | 'completed' | 'failed';
-
-export interface ResearchJob {
-  id: string;
-  business_id: string;
-  job_type: ResearchJobType;
-  status: ResearchJobStatus;
-  priority: number;
-  input_data: Record<string, unknown> | null;
-  output_data: Record<string, unknown> | null;
-  error_message: string | null;
-  started_at: string | null;
-  completed_at: string | null;
-  created_at: string;
-}
-
-// ============================================
-// V2: Site Customization Types
-// ============================================
-
-export type CustomizationStatus = 'pending' | 'in_progress' | 'review' | 'approved' | 'published';
-
-export interface SiteCustomization {
-  id: string;
-  business_id: string;
-  status: CustomizationStatus;
-  headline_customized: boolean;
-  tagline_customized: boolean;
-  about_customized: boolean;
-  services_customized: boolean;
-  images_customized: boolean;
-  colors_customized: boolean;
-  reviewed_by: string | null;
-  reviewed_at: string | null;
-  review_notes: string | null;
-  created_at: string;
-  updated_at: string;
-}
-
 // Working hours structure
 export interface WorkingHours {
   Monday?: string;
@@ -195,7 +93,6 @@ export interface Business {
   id: string;
   slug: string;
   template: TemplateName;
-  niche_id: string | null;
 
   // Basic info
   name: string;
@@ -221,16 +118,15 @@ export interface Business {
   working_hours: WorkingHours | null;
 
   // Social links
-  facebook_url: string | null;
-  instagram_url: string | null;
-  youtube_url: string | null;
+  facebook: string | null;
+  instagram: string | null;
+  youtube: string | null;
 
-  // Customizations
-  custom_headline: string | null;
-  custom_tagline: string | null;
-  custom_about: string | null;
-  primary_color: string | null;
-  accent_color: string | null;
+  // Logo
+  logo: string | null;
+
+  // Custom domain for white-label sites
+  custom_domain: string | null;
 
   // Status
   status: BusinessStatus;
@@ -263,28 +159,42 @@ export interface FormSubmission {
   created_at: string;
 }
 
-// Page view type
-export interface PageView {
+// ============================================
+// Business Reviews
+// ============================================
+
+export interface BusinessReview {
   id: string;
   business_id: string;
-  session_id: string | null;
-  page_path: string | null;
-  referrer: string | null;
-  user_agent: string | null;
+  review_id: string | null;
+  reviewer_name: string | null;
+  reviewer_link: string | null;
+  is_local_guide: boolean;
+  reviewer_reviews_count: number | null;
+  reviewer_photos_count: number | null;
+  rating: number;
+  review_text: string | null;
+  review_date: string | null;
+  published_at: string | null;
+  photos: string[] | null;
+  source_url: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ReviewScrapeJob {
+  id: string;
+  business_id: string;
+  status: 'pending' | 'running' | 'completed' | 'failed';
+  reviews_found: number;
+  reviews_imported: number;
+  error_message: string | null;
+  started_at: string | null;
+  completed_at: string | null;
   created_at: string;
 }
 
-// Default service (for niche templates)
-export interface DefaultService {
-  id: string;
-  niche: string;
-  name: string;
-  description: string | null;
-  icon: string | null;
-  sort_order: number;
-}
-
-// Database type for Supabase
+// Database type for Supabase (simplified - only core tables)
 export interface Database {
   public: {
     Tables: {
@@ -293,40 +203,20 @@ export interface Database {
         Insert: Omit<Business, 'id' | 'created_at' | 'updated_at'>;
         Update: Partial<Omit<Business, 'id'>>;
       };
-      services: {
-        Row: Service;
-        Insert: Omit<Service, 'id' | 'created_at'>;
-        Update: Partial<Omit<Service, 'id'>>;
+      business_reviews: {
+        Row: BusinessReview;
+        Insert: Omit<BusinessReview, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<BusinessReview, 'id'>>;
       };
-      form_submissions: {
-        Row: FormSubmission;
-        Insert: Omit<FormSubmission, 'id' | 'created_at'>;
-        Update: Partial<Omit<FormSubmission, 'id'>>;
+      leads: {
+        Row: Lead;
+        Insert: Omit<Lead, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<Lead, 'id'>>;
       };
-      page_views: {
-        Row: PageView;
-        Insert: Omit<PageView, 'id' | 'created_at'>;
-        Update: Partial<Omit<PageView, 'id'>>;
-      };
-      default_services: {
-        Row: DefaultService;
-        Insert: Omit<DefaultService, 'id'>;
-        Update: Partial<Omit<DefaultService, 'id'>>;
-      };
-      outscraper_imports: {
-        Row: {
-          id: string;
-          raw_data: Record<string, unknown>;
-          imported_at: string;
-          processed: boolean;
-        };
-        Insert: {
-          raw_data: Record<string, unknown>;
-          processed?: boolean;
-        };
-        Update: {
-          processed?: boolean;
-        };
+      sms_messages: {
+        Row: SMSMessage;
+        Insert: Omit<SMSMessage, 'id' | 'created_at'>;
+        Update: Partial<Omit<SMSMessage, 'id'>>;
       };
     };
   };
@@ -336,22 +226,3 @@ export interface Database {
 export interface BusinessWithServices extends Business {
   services: Service[];
 }
-
-/**
- * Default theme colors.
- *
- * Colors are now managed via CSS custom properties defined in globals.css.
- * To customize a business site, set these fields in the database:
- * - primary_color: Main brand color (used for headers, titles, footer bg)
- * - accent_color: Action color (used for buttons, links, CTAs)
- *
- * The CSS variable system automatically generates darker/lighter variants.
- */
-export const DEFAULT_COLORS = {
-  primary: '#1e3a5f',
-  primaryDark: '#0f1c2e',
-  primaryHover: '#152a45',
-  accent: '#3b82f6',
-  accentHover: '#2563eb',
-  accentLight: '#60a5fa',
-} as const;

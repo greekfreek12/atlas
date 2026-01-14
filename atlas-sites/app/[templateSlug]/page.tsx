@@ -1,15 +1,13 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getBusinessByTemplateSlug, getMockBusiness } from '@/lib/data';
-import { parseTemplateSlug, hasSignificantReviews, is24Hours } from '@/lib/utils';
+import { getBusinessByTemplateSlug, getMockBusiness, getFiveStarReviews } from '@/lib/data';
+import { parseTemplateSlug } from '@/lib/utils';
+import { getOrCreateSiteConfig, generateDefaultConfig } from '@/lib/site-config';
+import { PageRenderer } from '@/components/PageRenderer';
+import Tracker from '@/components/templates/Tracker';
 
-// Clean template components
-import {
-  Hero as CleanHero,
-  TrustBar as CleanTrustBar,
-  Services as CleanServices,
-  Reviews as CleanReviews,
-} from '@/components/templates/clean';
+// Disable caching to always fetch fresh data from database
+export const dynamic = 'force-dynamic';
 
 interface PageProps {
   params: Promise<{ templateSlug: string }>;
@@ -34,6 +32,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title,
     description: `${business.name} provides professional plumbing services${business.city ? ` in ${business.city}` : ''}. ${business.phone ? `Call ${business.phone} for` : 'Get'} emergency plumbing, drain cleaning, water heater repair & more.`,
+    icons: business.logo ? {
+      icon: business.logo,
+      shortcut: business.logo,
+      apple: business.logo,
+    } : undefined,
   };
 }
 
@@ -57,10 +60,32 @@ export default async function HomePage({ params }: PageProps) {
   }
 
   const basePath = `/${templateSlug}`;
-  const showReviews = hasSignificantReviews(business.google_rating, business.google_reviews_count);
-  const isOpen24 = is24Hours(business.working_hours);
 
-  // Build JSON-LD structured data for SEO (all values are from trusted database, not user input)
+  // Get or create site config
+  let siteConfig;
+  try {
+    siteConfig = await getOrCreateSiteConfig(business);
+    console.log('[page.tsx] Got config from database, version:', (siteConfig as any).version || 'unknown');
+  } catch (error) {
+    console.error('[page.tsx] ERROR getting config:', error);
+    // Fallback to generated default if database unavailable
+    siteConfig = generateDefaultConfig(business);
+    console.log('[page.tsx] Using fallback default config');
+  }
+
+  // Find the home page (slug is empty string)
+  const homePage = siteConfig.pages.find((page) => page.slug === '') || siteConfig.pages[0];
+
+  // DEBUG: Log sections being rendered
+  console.log('[page.tsx] Business:', business.slug);
+  console.log('[page.tsx] Home page sections:', homePage?.sections.map(s => ({ id: s.id, type: s.type, enabled: s.enabled })));
+
+  if (!homePage) {
+    notFound();
+  }
+
+  // Build JSON-LD structured data for SEO
+  // Note: All values are from trusted database sources, not user input
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Plumber',
@@ -85,13 +110,15 @@ export default async function HomePage({ params }: PageProps) {
     } : undefined,
   };
 
-  // Render template-specific home page
   return (
     <>
-      <CleanHero business={business} basePath={basePath} />
-      <CleanTrustBar businessName={business.name} is24Hours={isOpen24} />
-      <CleanServices services={business.services} basePath={basePath} businessName={business.name} />
-      {showReviews && <CleanReviews business={business} />}
+      <Tracker businessId={business.id} />
+      <PageRenderer
+        page={homePage}
+        theme={siteConfig.theme}
+        business={business}
+        basePath={basePath}
+      />
 
       {/* JSON-LD Schema for SEO - data is from trusted database source */}
       <script

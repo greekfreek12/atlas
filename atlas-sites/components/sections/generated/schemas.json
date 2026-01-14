@@ -1,0 +1,85 @@
+{
+  "financing": {
+    "headline": "Flexible Financing Options Available",
+    "subheadline": "Don't let budget concerns delay your plumbing repairs",
+    "description": "We offer competitive financing options to help make your plumbing project affordable. Get approved in minutes and start your project today.",
+    "financing_options": [
+      {
+        "title": "0% Interest",
+        "subtitle": "For 12 months",
+        "description": "No interest for qualified customers on approved credit",
+        "icon": "percent"
+      },
+      {
+        "title": "Low Monthly Payments",
+        "subtitle": "Starting at $25/month",
+        "description": "Spread your payments over time with our flexible terms",
+        "icon": "calendar"
+      },
+      {
+        "title": "Fast Approval",
+        "subtitle": "Get approved in minutes",
+        "description": "Quick and easy online application process",
+        "icon": "clock"
+      }
+    ],
+    "benefits": [
+      "No prepayment penalties",
+      "Fixed monthly payments",
+      "Same day approval available",
+      "Multiple payment options"
+    ],
+    "cta_text": "Apply for Financing",
+    "cta_phone": true
+  },
+  "pricing": {
+    "headline": "Service Packages",
+    "tagline": "Choose the right service level for your needs",
+    "tiers": [
+      {
+        "name": "Basic",
+        "price": "$99",
+        "description": "Essential service package",
+        "features": [
+          "Feature 1",
+          "Feature 2",
+          "Feature 3"
+        ],
+        "cta": {
+          "text": "Get Started",
+          "variant": "secondary"
+        }
+      },
+      {
+        "name": "Standard",
+        "price": "$199",
+        "description": "Most popular choice",
+        "features": [
+          "Everything in Basic",
+          "Feature 4",
+          "Feature 5"
+        ],
+        "cta": {
+          "text": "Choose Standard",
+          "variant": "primary"
+        },
+        "featured": true
+      },
+      {
+        "name": "Premium",
+        "price": "$299",
+        "description": "Complete service package",
+        "features": [
+          "Everything in Standard",
+          "Feature 6",
+          "Feature 7",
+          "Feature 8"
+        ],
+        "cta": {
+          "text": "Go Premium",
+          "variant": "secondary"
+        }
+      }
+    ]
+  }
+}

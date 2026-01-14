@@ -2,21 +2,17 @@ import { TemplateName, WorkingHours } from './types';
 
 /**
  * Parse template-slug format to extract template and slug
- * Example: "clean-marco-plumbing" -> { template: "clean", slug: "marco-plumbing" }
+ * Example: "plumbing-marco-plumbing" -> { template: "plumbing", slug: "marco-plumbing" }
  */
 export function parseTemplateSlug(templateSlug: string): {
   template: TemplateName;
   slug: string;
 } | null {
-  const validTemplates: TemplateName[] = ['industrial', 'clean', 'friendly'];
-
-  for (const template of validTemplates) {
-    if (templateSlug.startsWith(`${template}-`)) {
-      return {
-        template,
-        slug: templateSlug.slice(template.length + 1),
-      };
-    }
+  if (templateSlug.startsWith('plumbing-')) {
+    return {
+      template: 'plumbing',
+      slug: templateSlug.slice('plumbing-'.length),
+    };
   }
 
   return null;
