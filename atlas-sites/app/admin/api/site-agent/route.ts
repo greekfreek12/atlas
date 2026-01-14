@@ -13,6 +13,7 @@
 import { NextRequest } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { createServerClient } from '@/lib/supabase';
+import { getBusinessBySlug } from '@/lib/data';
 import {
   getSiteConfig,
   getSiteConfigBySlug,
@@ -427,18 +428,6 @@ export function GallerySection({ config, business }: SectionComponentProps<Galle
 // =============================================================================
 // TOOL EXECUTION
 // =============================================================================
-
-async function getBusinessBySlug(slug: string): Promise<Business | null> {
-  const supabase = createServerClient();
-  const { data, error } = await supabase
-    .from('businesses')
-    .select('*')
-    .eq('slug', slug)
-    .single();
-
-  if (error || !data) return null;
-  return data as Business;
-}
 
 async function executeTool(
   name: string,
@@ -1043,67 +1032,71 @@ export async function POST(request: NextRequest) {
         })));
 
         try {
-          // Create message with streaming
-          const response = await anthropic.messages.create({
-            model: 'claude-sonnet-4-20250514',
-            max_tokens: 4096,
-            system: systemPrompt,
-            tools,
-            messages: validMessages,
-            stream: true,
-          });
+          // Agentic loop - continue until no more tool calls
+          let messages: Anthropic.MessageParam[] = [...validMessages];
+          let maxIterations = 10; // Safety limit
 
-          let currentText = '';
-          let toolCalls: Array<{ id: string; name: string; input: string }> = [];
-          let currentToolId = '';
-          let currentToolName = '';
-          let currentToolInput = '';
+          while (maxIterations > 0) {
+            maxIterations--;
 
-          // Process stream events
-          for await (const event of response) {
-            if (event.type === 'content_block_start') {
-              if (event.content_block.type === 'text') {
-                // Text block starting
-              } else if (event.content_block.type === 'tool_use') {
-                currentToolId = event.content_block.id;
-                currentToolName = event.content_block.name;
-                currentToolInput = '';
-                controller.enqueue(encoder.encode(createStreamMessage({
-                  type: 'tool_call',
-                  tool_name: currentToolName,
-                })));
+            const response = await anthropic.messages.create({
+              model: 'claude-sonnet-4-20250514',
+              max_tokens: 4096,
+              system: systemPrompt,
+              tools,
+              messages,
+              stream: true,
+            });
+
+            let currentText = '';
+            let toolCalls: Array<{ id: string; name: string; input: string }> = [];
+            let currentToolId = '';
+            let currentToolName = '';
+            let currentToolInput = '';
+
+            // Process stream events
+            for await (const event of response) {
+              if (event.type === 'content_block_start') {
+                if (event.content_block.type === 'tool_use') {
+                  currentToolId = event.content_block.id;
+                  currentToolName = event.content_block.name;
+                  currentToolInput = '';
+                  controller.enqueue(encoder.encode(createStreamMessage({
+                    type: 'tool_call',
+                    tool_name: currentToolName,
+                  })));
+                }
+              } else if (event.type === 'content_block_delta') {
+                if (event.delta.type === 'text_delta') {
+                  currentText += event.delta.text;
+                  controller.enqueue(encoder.encode(createStreamMessage({
+                    type: 'text',
+                    content: event.delta.text,
+                  })));
+                } else if (event.delta.type === 'input_json_delta') {
+                  currentToolInput += event.delta.partial_json;
+                }
+              } else if (event.type === 'content_block_stop') {
+                if (currentToolId && currentToolName) {
+                  toolCalls.push({
+                    id: currentToolId,
+                    name: currentToolName,
+                    input: currentToolInput,
+                  });
+                  currentToolId = '';
+                  currentToolName = '';
+                  currentToolInput = '';
+                }
               }
-            } else if (event.type === 'content_block_delta') {
-              if (event.delta.type === 'text_delta') {
-                currentText += event.delta.text;
-                controller.enqueue(encoder.encode(createStreamMessage({
-                  type: 'text',
-                  content: event.delta.text,
-                })));
-              } else if (event.delta.type === 'input_json_delta') {
-                currentToolInput += event.delta.partial_json;
-              }
-            } else if (event.type === 'content_block_stop') {
-              if (currentToolId && currentToolName) {
-                toolCalls.push({
-                  id: currentToolId,
-                  name: currentToolName,
-                  input: currentToolInput,
-                });
-                currentToolId = '';
-                currentToolName = '';
-                currentToolInput = '';
-              }
-            } else if (event.type === 'message_stop') {
-              // Message complete
             }
-          }
 
-          // If there were tool calls, execute them and continue
-          if (toolCalls.length > 0) {
-            // Build tool results
+            // If no tool calls, we're done
+            if (toolCalls.length === 0) {
+              break;
+            }
+
+            // Execute tools and build results
             const toolResults: Anthropic.ToolResultBlockParam[] = [];
-
             for (const tool of toolCalls) {
               let input: Record<string, unknown> = {};
               try {
@@ -1126,8 +1119,7 @@ export async function POST(request: NextRequest) {
               })));
             }
 
-            // Continue conversation with tool results
-            // Use ContentBlockParam instead of ContentBlock since we're building message params
+            // Build assistant message with tool calls
             const assistantContent: Anthropic.ContentBlockParam[] = [];
             if (currentText) {
               assistantContent.push({ type: 'text', text: currentText });
@@ -1147,30 +1139,12 @@ export async function POST(request: NextRequest) {
               });
             }
 
-            const updatedMessages: Anthropic.MessageParam[] = [
-              ...validMessages,
+            // Add to conversation and continue loop
+            messages = [
+              ...messages,
               { role: 'assistant', content: assistantContent },
               { role: 'user', content: toolResults },
             ];
-
-            // Get follow-up response (streaming)
-            const followUp = await anthropic.messages.create({
-              model: 'claude-sonnet-4-20250514',
-              max_tokens: 4096,
-              system: systemPrompt,
-              tools,
-              messages: updatedMessages,
-              stream: true,
-            });
-
-            for await (const event of followUp) {
-              if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
-                controller.enqueue(encoder.encode(createStreamMessage({
-                  type: 'text',
-                  content: event.delta.text,
-                })));
-              }
-            }
           }
 
           // Send done message

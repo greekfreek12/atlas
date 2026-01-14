@@ -14,12 +14,11 @@ export async function getBusinessByTemplateSlug(
   const { template, slug } = parsed;
   const supabase = createServerClient();
 
-  // Fetch business
+  // Fetch business (no is_published filter - admin needs to preview all)
   const { data: businessData, error: businessError } = await supabase
     .from('businesses')
     .select('*')
     .eq('slug', slug)
-    .eq('is_published', true)
     .single();
 
   if (businessError || !businessData) {
@@ -165,7 +164,6 @@ export async function getBusinessBySlug(
     .from('businesses')
     .select('*')
     .eq('slug', slug)
-    .eq('is_published', true)
     .single();
 
   if (error || !business) {
