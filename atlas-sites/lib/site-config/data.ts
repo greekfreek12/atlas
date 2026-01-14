@@ -33,10 +33,17 @@ export async function getSiteConfig(businessId: string): Promise<SiteConfig | nu
     .select('*')
     .eq('business_id', businessId)
     .eq('is_draft', true)
-    .single();
+    .order('version', { ascending: false })
+    .limit(1)
+    .maybeSingle();
 
-  if (error || !data) {
-    console.log('[getSiteConfig] Error or no data:', error?.message || 'no data');
+  if (error) {
+    console.log('[getSiteConfig] Error:', error.message);
+    return null;
+  }
+
+  if (!data) {
+    console.log('[getSiteConfig] No config found for business');
     return null;
   }
 
@@ -58,7 +65,9 @@ export async function getPublishedSiteConfig(businessId: string): Promise<SiteCo
     .select('*')
     .eq('business_id', businessId)
     .eq('is_draft', false)
-    .single();
+    .order('version', { ascending: false })
+    .limit(1)
+    .maybeSingle();
 
   if (error || !data) {
     return null;
@@ -78,7 +87,8 @@ export async function getSiteConfigBySlug(slug: string): Promise<SiteConfig | nu
     .from('businesses')
     .select('id')
     .eq('slug', slug)
-    .single();
+    .limit(1)
+    .maybeSingle();
 
   if (businessError || !business) {
     return null;
@@ -119,13 +129,15 @@ export async function saveSiteConfig(
 ): Promise<{ success: boolean; error?: string }> {
   const supabase = createServerClient() as AnySupabaseClient;
 
-  // Check if draft exists
+  // Check if draft exists (get latest version)
   const { data: existing } = await supabase
     .from('site_configs')
     .select('id, version')
     .eq('business_id', businessId)
     .eq('is_draft', true)
-    .single();
+    .order('version', { ascending: false })
+    .limit(1)
+    .maybeSingle();
 
   if (existing) {
     // Update existing draft
@@ -165,13 +177,15 @@ export async function publishSiteConfig(
 ): Promise<{ success: boolean; error?: string }> {
   const supabase = createServerClient() as AnySupabaseClient;
 
-  // Get current draft
+  // Get current draft (latest version)
   const { data: draft, error: draftError } = await supabase
     .from('site_configs')
     .select('*')
     .eq('business_id', businessId)
     .eq('is_draft', true)
-    .single();
+    .order('version', { ascending: false })
+    .limit(1)
+    .maybeSingle();
 
   if (draftError || !draft) {
     return { success: false, error: 'No draft config found' };
@@ -179,13 +193,15 @@ export async function publishSiteConfig(
 
   const draftRow = draft as SiteConfigRow;
 
-  // Check if published version exists
+  // Check if published version exists (latest)
   const { data: published } = await supabase
     .from('site_configs')
     .select('id')
     .eq('business_id', businessId)
     .eq('is_draft', false)
-    .single();
+    .order('version', { ascending: false })
+    .limit(1)
+    .maybeSingle();
 
   if (published) {
     // Update published version
